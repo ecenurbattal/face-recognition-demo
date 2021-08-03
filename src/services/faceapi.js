@@ -7,24 +7,28 @@ export const loadModels = async () => {
     await faceapi.loadMtcnnModel(MODEL_URL);
 }
 
-export const getFullFaceDescriptions = async (blob) => {
+export const getFullFaceDescriptions = async (blob, inputSize = 512) => {
     const mtcnnForwardParams = {
-        minFaceSize:50,
+        minFaceSize: 50,
     }
-
+    console.log(blob)
     const options = new faceapi.MtcnnOptions(mtcnnForwardParams);
 
     let img = await faceapi.fetchImage(blob)
 
-    
-    const fullFaceDescriptions = await faceapi.detectAllFaces(img,options)
-    .withFaceLandmarks().withFaceDescriptors();
+
+    const fullFaceDescriptions = await faceapi.detectAllFaces(img, options)
+        .withFaceLandmarks().withFaceDescriptors();
+
+    /*  if (!fullFaceDescription) {
+         throw new Error(`no faces detected for ${label}`)
+     } */
     return fullFaceDescriptions;
 }
 
 
 export const createMatcher = (data) => {
-    
+
     let labeledDescriptors = data.map((member) => (
         new faceapi.LabeledFaceDescriptors(
             member.name,
@@ -34,7 +38,7 @@ export const createMatcher = (data) => {
         )
     ));
 
-    console.log('labeled descriptors',labeledDescriptors)
+    console.log('labeled descriptors', labeledDescriptors)
 
     let faceMatcher = new faceapi.FaceMatcher(
         labeledDescriptors,

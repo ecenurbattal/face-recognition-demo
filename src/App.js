@@ -7,16 +7,16 @@ import { Route, Switch } from 'react-router-dom';
 import Home from './components/Home/Home';
 import AddImage from './components/AddImage/AddImage';
 import RecognizeImage from './components/RecognizeImage/RecognizeImage';
-
+import VideoInput from './components/VideoInput/VideoInput';
 
 function App() {
 
-  const [imageUrl,setImageUrl] = useState();
+  const [imageUrl, setImageUrl] = useState();
   //const [detections,setDetections] = useState();
   const [drawBox, setDrawBox] = useState(null);
 
   // const handleImage = async () => {
-    
+
   // }
 
   useEffect(() => {
@@ -24,13 +24,13 @@ function App() {
       await loadModels();
     }
     init();
-  },[])
+  }, [])
 
   const handleFileChange = async (event) => {
     setImageUrl(URL.createObjectURL(event.target.files[0]))
     //handleImage();
     const data = await getFullFaceDescriptions(URL.createObjectURL(event.target.files[0]));
-    if(!!data){
+    if (!!data) {
       drawDetection(data.map(fd => fd.detection))
       //setDetections(data.map(fd => fd.detection))
     }
@@ -39,7 +39,7 @@ function App() {
   }
 
   const drawDetection = (detections) => {
-    if(!!detections) {
+    if (!!detections) {
       let temp = detections.map((detection, i) => {
         let _H = detection.box.height;
         let _W = detection.box.width;
@@ -66,10 +66,11 @@ function App() {
 
   return (
     <div className="App">
-       <Switch>
-        <Route exact path='/' component={Home}/>
-        <Route exact path='/description' component={AddImage}/>
-        <Route exact path='/recognition' component={RecognizeImage}/>
+      <Switch>
+        <Route exact path='/' component={Home} />
+        <Route exact path='/description' component={AddImage} />
+        <Route exact path='/recognition' component={RecognizeImage} />
+        <Route exact path="/camera" component={VideoInput} />
       </Switch>
     </div>
     //  <input

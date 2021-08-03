@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom'
 
 const Home = () => {
     return (
-        <div style={{display:'flex',flexDirection:'column'}}>
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
             <Link to='/description'>Resim Ekle</Link>
             <Link to='/recognition'>Resim Tanıt</Link>
+            <Link to="/camera">Kameradan Tanıt</Link>
         </div>
     )
 }
