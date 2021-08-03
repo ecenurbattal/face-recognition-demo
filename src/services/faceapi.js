@@ -11,7 +11,7 @@ export const getFullFaceDescriptions = async (blob, inputSize = 512) => {
     const mtcnnForwardParams = {
         minFaceSize: 50,
     }
-    console.log(blob)
+    // console.log(blob)
     const options = new faceapi.MtcnnOptions(mtcnnForwardParams);
 
     let img = await faceapi.fetchImage(blob)
