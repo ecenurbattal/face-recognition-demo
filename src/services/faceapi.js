@@ -9,7 +9,7 @@ export const loadModels = async () => {
 
 export const getFullFaceDescriptions = async (blob, inputSize = 512) => {
     const mtcnnForwardParams = {
-        minFaceSize: 50,
+        minFaceSize: 200,
     }
     console.log(blob)
     const options = new faceapi.MtcnnOptions(mtcnnForwardParams);
