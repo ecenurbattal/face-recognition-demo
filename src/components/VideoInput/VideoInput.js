@@ -18,7 +18,7 @@ const VideoInput = () => {
     const [match, setMatch] = useState();
     const [videoConstraints, setVideoConstraints] = useState();
     const [camera, setCamera] = useState();
-
+    const [detections, setDetections] = useState();
 
     const WIDTH = 420;
     const HEIGHT = 420;
@@ -32,7 +32,7 @@ const VideoInput = () => {
                 const { data } = await getDescriptions();
                 console.log('dbFaces', data)
                 //setFaceMatcher(createMatcher(data))
-                setDbFaces(data)
+                await setDbFaces(data)
 
             } catch (error) {
                 console.log(error)
@@ -75,7 +75,6 @@ const VideoInput = () => {
 
     useEffect(() => {
         const interval = setInterval(() => {
-
             capture();
         }, 1500);
         return () => clearInterval(interval);
@@ -93,6 +92,55 @@ const VideoInput = () => {
         }
         init();
     }, [descriptions, faceMatcher])
+
+
+    useEffect(() => {
+        const drawDetection = () => {
+            // let videoConstraints = null;
+            // let camera = '';
+
+            if (!!detections) {
+                let temp = detections.map((detection, i) => {
+                    let _H = detection.box.height;
+                    let _W = detection.box.width;
+                    let _X = detection.box._x;
+                    let _Y = detection.box._y;
+                    return (
+                        <div key={i}>
+                            <div
+                                style={{
+                                    position: 'absolute',
+                                    border: 'solid',
+                                    borderColor: 'blue',
+                                    height: _H,
+                                    width: _W,
+                                    transform: `translate(${_X}px,${_Y}px)`
+                                }}
+                            >
+                                {!!match && !!match[i] ? (
+                                    <p
+                                        style={{
+                                            backgroundColor: 'blue',
+                                            border: 'solid',
+                                            borderColor: 'blue',
+                                            width: _W,
+                                            marginTop: 0,
+                                            color: '#fff',
+                                            transform: `translate(-3px,${_H}px)`
+                                        }}
+                                    >
+                                        {match[i]._label}
+                                    </p>
+                                ) : null}
+                            </div>
+                        </div>
+                    );
+                });
+                setDrawBox(temp);
+            }
+        }
+        drawDetection();
+    }, [detections, match])
 
     const setInputDevice = () => {
         navigator.mediaDevices.enumerateDevices().then(async devices => {
@@ -123,7 +171,7 @@ const VideoInput = () => {
                 inputSize
             ).then(fullDesc => {
                 if (!!fullDesc) {
-                    drawDetection(fullDesc.map(fd => fd.detection))
+                    setDetections(fullDesc.map(fd => fd.detection))
                     console.log(fullDesc.map(fd => fd.descriptor))
                     setDescriptions(fullDesc.map(fd => fd.descriptor))
                 }
@@ -137,50 +185,7 @@ const VideoInput = () => {
 
 
 
-    const drawDetection = (detections) => {
-        // let videoConstraints = null;
-        // let camera = '';
 
-        if (!!detections) {
-            let temp = detections.map((detection, i) => {
-                let _H = detection.box.height;
-                let _W = detection.box.width;
-                let _X = detection.box._x;
-                let _Y = detection.box._y;
-                return (
-                    <div key={i}>
-                        <div
-                            style={{
-                                position: 'absolute',
-                                border: 'solid',
-                                borderColor: 'blue',
-                                height: _H,
-                                width: _W,
-                                transform: `translate(${_X}px,${_Y}px)`
-                            }}
-                        >
-                            {!!match ? (
-                                <p
-                                    style={{
-                                        backgroundColor: 'blue',
-                                        border: 'solid',
-                                        borderColor: 'blue',
-                                        width: _W,
-                                        marginTop: 0,
-                                        color: '#fff',
-                                        transform: `translate(-3px,${_H}px)`
-                                    }}
-                                >
-                                    {match[i]._label}
-                                </p>
-                            ) : null}
-                        </div>
-                    </div>
-                );
-            });
-            setDrawBox(temp);
-        }
-    }
     return (
         <div
             className="Camera"
